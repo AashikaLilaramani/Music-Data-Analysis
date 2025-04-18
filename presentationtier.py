@@ -24,13 +24,20 @@ def music_tracks(dbConn):
     cmd = input("Your choice --> ")
     print()
 
+    most_expensive = objecttier.top_10_expensive(dbConn)
+    average_duration = objecttier.average_track_duration(dbConn)
+    tracks_by_genres = objecttier.tracks_by_genre(dbConn)
 
     if(cmd == '1'):
         print("Top 10 Most Expensive Tracks:")
+        for tr in most_expensive:
+            print(f"{tr.Name} - ${tr.UnitPrice}")
     elif(cmd == '2'):
-        print("Average Track Duration (in seconds):")
+        print(f"Average Track Duration (in seconds): {average_duration}")
     elif(cmd == '3'):
         print("Amount of Tracks in Each Genre:")
+        for genre, count in tracks_by_genres:
+            print(f"{genre.Name} (ID: {genre.GenreId} has {count} tracks)")
     else:
         print("Unknown input. Try again.")
         menu_selection(dbConn)

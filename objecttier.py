@@ -305,7 +305,7 @@ class Playlist_Track:
 # Properties:
 # PlaylistId: int, Name: string
 # Playlist class definition (constructors & properties)
-class Playlist_Track:
+class Playlist:
    def __init__(self, Playlist_Id, Playlist_Name):
       self._PlaylistId = Playlist_Id
       self._Name = Playlist_Name
@@ -388,4 +388,51 @@ def num_uniqueArtists(dbConn):
    if row is None:
       return -1
    else:
+      return row[0]  
+##################################################################
+# 
+# top_10_expensive:
+# Returns the top 10 most expensive tracks
+def top_10_expensive(dbConn):
+   sql = f"SELECT TrackId, Name, AlbumId, MediaTypeId, GenreId, Composer, Milliseconds, Bytes, UnitPrice FROM Tracks ORDER BY UnitPrice DESC LIMIT 10"
+   
+   rows = datatier.select_n_rows(dbConn, sql)
+   if rows is None:
+      return []
+   
+   S = []
+   for row in rows:
+      tr = Tracks(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
+      S.append(tr)
+   
+   return S
+##################################################################
+# 
+# average_track_duration:
+# Returns the average of all track durations as seconds
+def average_track_duration(dbConn):
+   sql = f"SELECT AVG(Milliseconds) / 1000 FROM Tracks"
+   
+   row = datatier.select_n_rows(dbConn, sql)
+   if row is None:
+      return -1
+   else:
       return row[0]
+##################################################################
+# 
+# tracks_by_genre:
+# Returns the number of tracks in each genre
+def tracks_by_genre(dbConn):
+   sql = f"SELECT Genres.GenreId, Genres.Name, COUNT(Tracks.TrackId) FROM Genres JOIN Tracks ON Genres.GenreId = Tracks.GenreId GROUP BY Genres.GenreId ORDER BY COUNT(Tracks.TrackId) DESC"
+   
+   rows = datatier.select_n_rows(dbConn, sql)
+   if rows is None:
+      return []
+   
+   S = []
+   for row in rows:
+      tr = Genre(row[0], row[1])
+      track_count = row[2]
+      S.append((tr, track_count))
+   
+   return S
