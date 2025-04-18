@@ -323,7 +323,7 @@ class Playlist_Track:
 # Properties:
 # TrackId: int, Name: string, AlbumId: int, MediaTypeId: int, GenreId: int, Composer: string, Milliseconds: int, Bytes: int, UnitPrice: int
 # Tracks class definition (constructors & properties)
-class Invoice:
+class Tracks:
    def __init__(self, Track_Id, Track_Name, Album_Id, Media_TypeId, Genre_Id, Track_Composer, Milli_Seconds, Track_Bytes, Unit_Price):
       self._TrackId = Track_Id
       self._Name = Track_Name
