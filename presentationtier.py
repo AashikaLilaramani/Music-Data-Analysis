@@ -40,7 +40,8 @@ def music_tracks(dbConn):
             print(f"{genre.Name} (ID: {genre.GenreId} has {count} tracks)")
     else:
         print("Unknown input. Try again.")
-        menu_selection(dbConn)
+    
+    menu_selection(dbConn)
 
 
 
@@ -64,7 +65,9 @@ def albums_artists(dbConn):
             print(f"{artist.Name} - {count} albums")
     else:
         print("Unknown input. Try again.")
-        menu_selection(dbConn)
+
+    menu_selection(dbConn)
+
 
 def sales_revenue(dbConn):
     print("Select an option: ")
@@ -74,16 +77,28 @@ def sales_revenue(dbConn):
     cmd = input("Your choice --> ")
     print()
 
+    total_revenue = objecttier.revenue_by_country(dbConn)
+    highest_spending_customers = objecttier.highest_spending_customers(dbConn)
+    monthly_sales = objecttier.monthly_sales(dbConn)
 
     if(cmd == '1'):
         print("Total Revenue By Country:")
+        for country, revenue in total_revenue:
+            print(f"{country}: ${revenue:.2f}")
     elif(cmd == '2'):
         print("Top 10 Highest Spending Customers:")
+        for customer, amount in highest_spending_customers:
+            name = f"{customer.FirstName} {customer.LastName}"
+            print(f"{name} - ${amount:.2f}")
     elif(cmd == '3'):
         print("Monthly Sales Trends:")
+        for month, revenue in monthly_sales:
+            print(f"{month:} ${revenue:.2f}")
     else:
         print("Unknown input. Try again.")
-        menu_selection(dbConn)
+
+    menu_selection(dbConn)
+
 
 def playlists_usage(dbConn):
     print("Select an option: ")
@@ -92,14 +107,21 @@ def playlists_usage(dbConn):
     cmd = input("Your choice --> ")
     print()
 
+    tracks_in_playlist = objecttier.playlist_track_counts(dbConn)
+    common_media_types = objecttier.common_media_types(dbConn)
 
     if(cmd == '1'):
         print("Number of Trakcs per Playlist:")
+        for playlist, track in tracks_in_playlist:
+            print(f"{playlist.Name} has {track} tracks")
     elif(cmd == '2'):
         print("Most Common Media Types:")
+        for media, count in common_media_types:
+            print(f"{media.Name} is used {count} times")
     else:
         print("Unknown input. Try again.")
-        menu_selection(dbConn)
+    
+    menu_selection(dbConn)
 
 
 

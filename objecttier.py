@@ -367,6 +367,7 @@ class Tracks:
 
 
 
+
 ##################################################################
 # 
 # num_albums:
@@ -472,4 +473,81 @@ def most_prolific_artists(dbConn):
       S.append((artist, album_count))
    
    return S
+##################################################################
+# 
+# revenue_by_country:
+# Returns the amount of revenue by each country
+def revenue_by_country(dbConn):
+   sql = f"SELECT Invoices.BillingCountry, SUM(Invoices.Total) FROM Invoices GROUP BY Invoices.BillingCountry ORDER BY SUM(Invoices.Total) DESC"
 
+   rows = datatier.select_n_rows(dbConn, sql)
+   if rows is None:
+      return -1
+   else:
+      return rows
+##################################################################
+# 
+# highest_spending_customers:
+# Returns the highest spending customers
+def highest_spending_customers(dbConn):
+   sql = f"SELECT Customers.CustomerId, Customers.FirstName, Customers.LastName, Customers.Company, Customers.Address, Customers.City, Customers.State, Customers.Country, Customers.PostalCode, Customers.Phone, Customers.Fax, Customers.Email, Customers.SupportRepId, SUM(Invoices.Total) FROM Customers JOIN Invoices ON Customers.CustomerId = Invoices.CustomerId GROUP BY Customers.CustomerId ORDER BY SUM(Invoices.Total) DESC LIMIT 10"
+
+   rows = datatier.select_n_rows(dbConn, sql)
+   if rows is None:
+      return []
+   
+   S = []
+   for row in rows:
+      customer = Customer(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12])
+      inv = row[13]
+      S.append((customer, inv))
+   
+   return S   
+##################################################################
+# 
+# monthly_sales:
+# Returns the invoices every month
+def monthly_sales(dbConn):
+   sql = f"SELECT strftime('%Y-%m', Invoices.InvoiceDate) AS Month, SUM(Total) AS Revenue FROM Invoices GROUP BY Month ORDER BY Month"
+
+   rows = datatier.select_n_rows(dbConn, sql)
+   if rows is None:
+      return -1
+   else:
+      return rows
+##################################################################
+# 
+# playlist_track_counts:
+# Returns the amount of tracks in each playlist
+def playlist_track_counts(dbConn):
+   sql = f"SELECT Playlists.PlaylistId, Playlists.Name, COUNT(Playlist_Track.TrackId) AS NumTracks FROM Playlists JOIN Playlist_Track ON Playlists.PlaylistId = Playlist_Track.PlaylistId GROUP BY Playlists.PlaylistId ORDER BY NumTracks DESC"
+
+   rows = datatier.select_n_rows(dbConn, sql)
+   if rows is None:
+      return []
+   
+   S = []
+   for row in rows:
+      playlist = Playlist(row[0], row[1])
+      track_count = row[2]
+      S.append((playlist, track_count))
+   
+   return S
+##################################################################
+# 
+# common_media_types:
+# Returns the most common media types
+def common_media_types(dbConn):
+   sql = f"SELECT media_types.MediaTypeId, media_types.Name, COUNT(Tracks.TrackId) AS NumTracks FROM media_types JOIN Tracks ON media_types.MediaTypeId = Tracks.MediaTypeId GROUP BY media_types.MediaTypeId ORDER BY NumTracks DESC"
+
+   rows = datatier.select_n_rows(dbConn, sql)
+   if rows is None:
+      return []
+   
+   S = []
+   for row in rows:
+      media = Media_Types(row[0], row[1])
+      album_count = row[2]
+      S.append((media, album_count))
+   
+   return S
