@@ -4,6 +4,7 @@
 #
 import sqlite3
 import objecttier
+import analysis
 
 
 
@@ -85,6 +86,9 @@ def sales_revenue(dbConn):
         print("Total Revenue By Country:")
         for country, revenue in total_revenue:
             print(f"{country}: ${revenue:.2f}")
+        graph =  input("Would you like to see this data as a graph? (y/n)").lower()
+        if graph == 'y':
+            analysis.plot_rev(total_revenue)
     elif(cmd == '2'):
         print("Top 10 Highest Spending Customers:")
         for customer, amount in highest_spending_customers:
