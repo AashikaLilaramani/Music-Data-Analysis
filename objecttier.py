@@ -436,3 +436,40 @@ def tracks_by_genre(dbConn):
       S.append((tr, track_count))
    
    return S
+##################################################################
+# 
+# albums_by_artist:
+# Returns the albums ordered by artist
+def albums_by_artist(dbConn):
+   sql = f"SELECT Albums.AlbumId, Albums.Title, Albums.ArtistId, Artists.Name FROM Albums JOIN Artists ON Albums.ArtistId = Artists.ArtistId ORDER BY Artists.Name"
+
+   rows = datatier.select_n_rows(dbConn, sql)
+   if rows is None:
+      return []
+
+   S = []
+   for row in rows:
+      album = Album(row[0], row[1], row[2])
+      artist = row[3]
+      S.append((album, artist))
+
+   return S
+##################################################################
+# 
+# most_prolific_artists:
+# Returns the most prolific artists
+def most_prolific_artists(dbConn):
+   sql = f"SELECT Artists.ArtistId, Artists.Name, COUNT(Albums.AlbumId) FROM Artists JOIN Albums ON Artists.ArtistId = Albums.ArtistId GROUP BY Artists.ArtistId ORDER BY COUNT(Albums.AlbumId) DESC LIMIT 10"
+
+   rows = datatier.select_n_rows(dbConn, sql)
+   if rows is None:
+      return []
+   
+   S = []
+   for row in rows:
+      artist = Artist(row[0], row[1])
+      album_count = row[2]
+      S.append((artist, album_count))
+   
+   return S
+

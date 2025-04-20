@@ -51,11 +51,17 @@ def albums_artists(dbConn):
     cmd = input("Your choice --> ")
     print()
 
+    prolific_artists = objecttier.most_prolific_artists(dbConn)
+    albums_by_artist = objecttier.albums_by_artist(dbConn)
 
     if(cmd == '1'):
         print("Albums by Artist:")
+        for album, artist in albums_by_artist:
+            print(f"{album.Title} - {artist}")
     elif(cmd == '2'):
         print("Most Prolific Artists:")
+        for artist, count in prolific_artists:
+            print(f"{artist.Name} - {count} albums")
     else:
         print("Unknown input. Try again.")
         menu_selection(dbConn)
